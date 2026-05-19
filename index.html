@@ -39,6 +39,15 @@
       margin-bottom: 1.8rem;
     }
 
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #aaa;
+      margin: 1.4rem 0 0.8rem;
+    }
+
     .field {
       margin-bottom: 1.4rem;
     }
@@ -66,7 +75,6 @@
       text-align: right;
     }
 
-    /* Slider */
     input[type="range"] {
       -webkit-appearance: none;
       width: 100%;
@@ -98,7 +106,6 @@
       box-shadow: 0 1px 4px rgba(0,0,0,.25);
     }
 
-    /* Number input below slider */
     .input-wrap {
       position: relative;
     }
@@ -133,6 +140,12 @@
       border-color: #4f46e5;
     }
 
+    .ss-note {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 0.25rem;
+    }
+
     .divider {
       border: none;
       border-top: 1.5px solid #f0f0f0;
@@ -165,14 +178,16 @@
       font-size: 0.75rem;
       color: #999;
       text-align: center;
-      line-height: 1.5;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Calculadora de Huelga</h1>
-    <p class="subtitle">Calcula el coste económico de participar en una huelga y el tiempo de recuperación.</p>
+    <p class="subtitle">Calcula el coste económico neto de participar en una huelga y el tiempo de recuperación.</p>
+
+    <p class="section-title">Salario</p>
 
     <!-- Salario -->
     <div class="field">
@@ -200,6 +215,37 @@
       </div>
     </div>
 
+    <p class="section-title">Descuentos aplicados</p>
+
+    <!-- SS obrera -->
+    <div class="field">
+      <div class="field-header">
+        <label for="ss-range">Cuota obrera Seguridad Social</label>
+        <span class="field-val" id="ss-display">6,35 %</span>
+      </div>
+      <input type="range" id="ss-range" min="0" max="15" step="0.05" value="6.35" />
+      <div class="input-wrap">
+        <input type="number" id="ss" value="6.35" min="0" max="100" step="0.05" />
+        <span>%</span>
+      </div>
+      <p class="ss-note">Tipo estándar 2024: 6,35 % (contingencias 4,70 % + desempleo 1,55 % + formación 0,10 %)</p>
+    </div>
+
+    <!-- IRPF -->
+    <div class="field">
+      <div class="field-header">
+        <label for="irpf-range">Tipo marginal IRPF</label>
+        <span class="field-val" id="irpf-display">24 %</span>
+      </div>
+      <input type="range" id="irpf-range" min="0" max="47" step="1" value="24" />
+      <div class="input-wrap">
+        <input type="number" id="irpf" value="24" min="0" max="100" step="1" />
+        <span>%</span>
+      </div>
+    </div>
+
+    <p class="section-title">Huelga</p>
+
     <!-- Días de huelga -->
     <div class="field">
       <div class="field-header">
@@ -216,7 +262,7 @@
     <!-- Aumento esperado -->
     <div class="field">
       <div class="field-header">
-        <label for="aumento-range">Aumento mensual esperado</label>
+        <label for="aumento-range">Aumento mensual neto esperado</label>
         <span class="field-val" id="aumento-display">150 €</span>
       </div>
       <input type="range" id="aumento-range" min="0" max="1000" step="10" value="150" />
@@ -230,11 +276,15 @@
 
     <div class="results">
       <div class="result-row">
-        <span class="result-label">Coste por día de huelga</span>
-        <span class="result-value" id="r-dia">–</span>
+        <span class="result-label">Coste bruto por día</span>
+        <span class="result-value" id="r-dia-bruto">–</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Ahorro SS + IRPF por día</span>
+        <span class="result-value" id="r-ahorro">–</span>
       </div>
       <div class="result-row highlight-red">
-        <span class="result-label">Coste total de la huelga</span>
+        <span class="result-label">Coste neto total de la huelga</span>
         <span class="result-value" id="r-total">–</span>
       </div>
       <div class="result-row highlight">
@@ -244,40 +294,45 @@
     </div>
 
     <p class="info">
-      Coste/día = [(salario mensual ÷ 30) + (pagas extra ÷ 365)] × 1,4<br/>
-      El factor 1,4 incluye el descuento proporcional del descanso semanal (7 ÷ 5).
+      Coste bruto/día = [(salario ÷ 30) + (pagas ÷ 365)] × 1,4<br/>
+      Coste neto/día = coste bruto × (1 − SS% − IRPF%)<br/>
+      El factor 1,4 incluye el descuento proporcional del descanso semanal.
     </p>
   </div>
 
   <script>
     const fields = [
-      { id: 'salario', unit: '€',    fmt: v => fmtN(v) + ' €' },
-      { id: 'pagas',   unit: '€',    fmt: v => fmtN(v) + ' €' },
-      { id: 'dias',    unit: 'días', fmt: v => v + ' días' },
-      { id: 'aumento', unit: '€',    fmt: v => fmtN(v) + ' €' },
+      { id: 'salario', fmt: v => fmtN(v) + ' €' },
+      { id: 'pagas',   fmt: v => fmtN(v) + ' €' },
+      { id: 'ss',      fmt: v => fmtDec(v) + ' %' },
+      { id: 'irpf',    fmt: v => fmtN(v) + ' %' },
+      { id: 'dias',    fmt: v => v + ' días' },
+      { id: 'aumento', fmt: v => fmtN(v) + ' €' },
     ];
 
-    function fmtN(n) {
-      return Number(n).toLocaleString('es-ES');
-    }
-
-    function fmt2(n) {
-      return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
+    function fmtN(n) { return Number(n).toLocaleString('es-ES'); }
+    function fmtDec(n) { return Number(n).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function fmt2(n) { return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
     function calc() {
       const salario = parseFloat(document.getElementById('salario').value) || 0;
       const pagas   = parseFloat(document.getElementById('pagas').value)   || 0;
+      const ss      = parseFloat(document.getElementById('ss').value)      || 0;
+      const irpf    = parseFloat(document.getElementById('irpf').value)    || 0;
       const dias    = parseFloat(document.getElementById('dias').value)     || 0;
       const aumento = parseFloat(document.getElementById('aumento').value)  || 0;
 
-      const costeDia   = ((salario / 30) + (pagas / 365)) * 1.4;
-      const costeTotal = costeDia * dias;
-      const meses      = aumento > 0 ? costeTotal / aumento : null;
+      const costeBrutoDia = ((salario / 30) + (pagas / 365)) * 1.4;
+      const descuento     = (ss + irpf) / 100;
+      const costeNetoDia  = costeBrutoDia * (1 - descuento);
+      const ahorroDia     = costeBrutoDia * descuento;
+      const costeTotal    = costeNetoDia * dias;
+      const meses         = aumento > 0 ? costeTotal / aumento : null;
 
-      document.getElementById('r-dia').textContent   = fmt2(costeDia) + ' €';
-      document.getElementById('r-total').textContent = fmt2(costeTotal) + ' €';
-      document.getElementById('r-meses').textContent = meses !== null ? fmt2(meses) + ' meses' : '–';
+      document.getElementById('r-dia-bruto').textContent = fmt2(costeBrutoDia) + ' €';
+      document.getElementById('r-ahorro').textContent    = '−' + fmt2(ahorroDia) + ' €';
+      document.getElementById('r-total').textContent     = fmt2(costeTotal) + ' €';
+      document.getElementById('r-meses').textContent     = meses !== null ? fmt2(meses) + ' meses' : '–';
     }
 
     fields.forEach(({ id, fmt }) => {
@@ -286,22 +341,20 @@
       const disp  = document.getElementById(id + '-display');
 
       function syncFromNum() {
-        range.value = num.value;
-        disp.textContent = fmt(num.value);
+        if (range) range.value = num.value;
+        if (disp)  disp.textContent = fmt(num.value);
         calc();
       }
 
       function syncFromRange() {
         num.value = range.value;
-        disp.textContent = fmt(range.value);
+        if (disp) disp.textContent = fmt(range.value);
         calc();
       }
 
       num.addEventListener('input', syncFromNum);
-      range.addEventListener('input', syncFromRange);
-
-      // init display
-      disp.textContent = fmt(num.value);
+      if (range) range.addEventListener('input', syncFromRange);
+      if (disp)  disp.textContent = fmt(num.value);
     });
 
     calc();
