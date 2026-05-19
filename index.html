@@ -215,20 +215,15 @@
       </div>
     </div>
 
-    <p class="section-title">Descuentos aplicados</p>
+    <p class="section-title">Descuentos trabajador SS</p>
 
-    <!-- SS obrera -->
+    <!-- SS fija -->
     <div class="field">
-      <div class="field-header">
-        <label for="ss-range">Cuota obrera Seguridad Social</label>
-        <span class="field-val" id="ss-display">6,35 %</span>
-      </div>
-      <input type="range" id="ss-range" min="0" max="15" step="0.05" value="6.35" />
-      <div class="input-wrap">
-        <input type="number" id="ss" value="6.35" min="0" max="100" step="0.05" />
-        <span>%</span>
-      </div>
-      <p class="ss-note">Tipo estándar 2024: 6,35 % (contingencias 4,70 % + desempleo 1,55 % + formación 0,10 %)</p>
+      <p class="ss-note">
+        Contingencias comunes 4,70 % + Desempleo 1,65 % + Formación profesional 0,15 %
+        = <strong>6,50 %</strong> aplicado automáticamente.
+      </p>
+      <input type="hidden" id="ss" value="6.5" />
     </div>
 
     <!-- IRPF -->
@@ -295,7 +290,7 @@
 
     <p class="info">
       Coste bruto/día = [(salario ÷ 30) + (pagas ÷ 365)] × 1,4<br/>
-      Coste neto/día = coste bruto × (1 − SS% − IRPF%)<br/>
+      Coste neto/día = coste bruto × (1 − 6,50 % SS − IRPF%)<br/>
       El factor 1,4 incluye el descuento proporcional del descanso semanal.
     </p>
   </div>
@@ -304,14 +299,12 @@
     const fields = [
       { id: 'salario', fmt: v => fmtN(v) + ' €' },
       { id: 'pagas',   fmt: v => fmtN(v) + ' €' },
-      { id: 'ss',      fmt: v => fmtDec(v) + ' %' },
       { id: 'irpf',    fmt: v => fmtN(v) + ' %' },
       { id: 'dias',    fmt: v => v + ' días' },
       { id: 'aumento', fmt: v => fmtN(v) + ' €' },
     ];
 
     function fmtN(n) { return Number(n).toLocaleString('es-ES'); }
-    function fmtDec(n) { return Number(n).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function fmt2(n) { return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
     function calc() {
