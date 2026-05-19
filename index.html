@@ -40,19 +40,65 @@
     }
 
     .field {
-      margin-bottom: 1.1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .field-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
     }
 
     label {
-      display: block;
       font-size: 0.82rem;
       font-weight: 600;
       color: #333;
-      margin-bottom: 0.35rem;
       text-transform: uppercase;
       letter-spacing: .03em;
     }
 
+    .field-val {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #4f46e5;
+      min-width: 5rem;
+      text-align: right;
+    }
+
+    /* Slider */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e0e0e0;
+      outline: none;
+      cursor: pointer;
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #4f46e5;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border: none;
+      border-radius: 50%;
+      background: #4f46e5;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    }
+
+    /* Number input below slider */
     .input-wrap {
       position: relative;
     }
@@ -69,7 +115,7 @@
 
     input[type="number"] {
       width: 100%;
-      padding: 0.6rem 2.5rem 0.6rem 0.85rem;
+      padding: 0.5rem 2.5rem 0.5rem 0.85rem;
       border: 1.5px solid #d1d5db;
       border-radius: 8px;
       font-size: 1rem;
@@ -105,38 +151,14 @@
       align-items: baseline;
     }
 
-    .result-label {
-      font-size: 0.85rem;
-      color: #555;
-    }
+    .result-label { font-size: 0.85rem; color: #555; }
+    .result-value { font-size: 1rem; font-weight: 600; color: #1a1a2e; }
 
-    .result-value {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #1a1a2e;
-    }
+    .result-row.highlight-red .result-label { font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
+    .result-row.highlight-red .result-value { font-size: 1.25rem; color: #dc2626; }
 
-    .result-row.highlight .result-label {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #1a1a2e;
-    }
-
-    .result-row.highlight .result-value {
-      font-size: 1.25rem;
-      color: #4f46e5;
-    }
-
-    .result-row.highlight-red .result-label {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #1a1a2e;
-    }
-
-    .result-row.highlight-red .result-value {
-      font-size: 1.25rem;
-      color: #dc2626;
-    }
+    .result-row.highlight .result-label { font-size: 0.9rem; font-weight: 600; color: #1a1a2e; }
+    .result-row.highlight .result-value { font-size: 1.25rem; color: #4f46e5; }
 
     .info {
       margin-top: 1.5rem;
@@ -152,32 +174,52 @@
     <h1>Calculadora de Huelga</h1>
     <p class="subtitle">Calcula el coste económico de participar en una huelga y el tiempo de recuperación.</p>
 
+    <!-- Salario -->
     <div class="field">
-      <label for="salario">Salario bruto mensual</label>
+      <div class="field-header">
+        <label for="salario-range">Salario bruto mensual</label>
+        <span class="field-val" id="salario-display">2.100 €</span>
+      </div>
+      <input type="range" id="salario-range" min="500" max="8000" step="50" value="2100" />
       <div class="input-wrap">
         <input type="number" id="salario" value="2100" min="0" step="50" />
         <span>€</span>
       </div>
     </div>
 
+    <!-- Pagas extra -->
     <div class="field">
-      <label for="pagas">Pagas extra anuales</label>
+      <div class="field-header">
+        <label for="pagas-range">Pagas extra anuales</label>
+        <span class="field-val" id="pagas-display">2.000 €</span>
+      </div>
+      <input type="range" id="pagas-range" min="0" max="10000" step="100" value="2000" />
       <div class="input-wrap">
         <input type="number" id="pagas" value="2000" min="0" step="100" />
         <span>€</span>
       </div>
     </div>
 
+    <!-- Días de huelga -->
     <div class="field">
-      <label for="dias">Días de huelga</label>
+      <div class="field-header">
+        <label for="dias-range">Días de huelga</label>
+        <span class="field-val" id="dias-display">3 días</span>
+      </div>
+      <input type="range" id="dias-range" min="1" max="30" step="1" value="3" />
       <div class="input-wrap">
         <input type="number" id="dias" value="3" min="1" step="1" />
         <span>días</span>
       </div>
     </div>
 
+    <!-- Aumento esperado -->
     <div class="field">
-      <label for="aumento">Aumento mensual esperado</label>
+      <div class="field-header">
+        <label for="aumento-range">Aumento mensual esperado</label>
+        <span class="field-val" id="aumento-display">150 €</span>
+      </div>
+      <input type="range" id="aumento-range" min="0" max="1000" step="10" value="150" />
       <div class="input-wrap">
         <input type="number" id="aumento" value="150" min="0" step="10" />
         <span>€</span>
@@ -208,10 +250,19 @@
   </div>
 
   <script>
-    const ids = ['salario', 'pagas', 'dias', 'aumento'];
+    const fields = [
+      { id: 'salario', unit: '€',    fmt: v => fmtN(v) + ' €' },
+      { id: 'pagas',   unit: '€',    fmt: v => fmtN(v) + ' €' },
+      { id: 'dias',    unit: 'días', fmt: v => v + ' días' },
+      { id: 'aumento', unit: '€',    fmt: v => fmtN(v) + ' €' },
+    ];
 
-    function fmt(n, decimals = 2) {
-      return n.toLocaleString('es-ES', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    function fmtN(n) {
+      return Number(n).toLocaleString('es-ES');
+    }
+
+    function fmt2(n) {
+      return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function calc() {
@@ -224,12 +275,35 @@
       const costeTotal = costeDia * dias;
       const meses      = aumento > 0 ? costeTotal / aumento : null;
 
-      document.getElementById('r-dia').textContent   = fmt(costeDia) + ' €';
-      document.getElementById('r-total').textContent = fmt(costeTotal) + ' €';
-      document.getElementById('r-meses').textContent = meses !== null ? fmt(meses) + ' meses' : '–';
+      document.getElementById('r-dia').textContent   = fmt2(costeDia) + ' €';
+      document.getElementById('r-total').textContent = fmt2(costeTotal) + ' €';
+      document.getElementById('r-meses').textContent = meses !== null ? fmt2(meses) + ' meses' : '–';
     }
 
-    ids.forEach(id => document.getElementById(id).addEventListener('input', calc));
+    fields.forEach(({ id, fmt }) => {
+      const num   = document.getElementById(id);
+      const range = document.getElementById(id + '-range');
+      const disp  = document.getElementById(id + '-display');
+
+      function syncFromNum() {
+        range.value = num.value;
+        disp.textContent = fmt(num.value);
+        calc();
+      }
+
+      function syncFromRange() {
+        num.value = range.value;
+        disp.textContent = fmt(range.value);
+        calc();
+      }
+
+      num.addEventListener('input', syncFromNum);
+      range.addEventListener('input', syncFromRange);
+
+      // init display
+      disp.textContent = fmt(num.value);
+    });
+
     calc();
   </script>
 </body>
