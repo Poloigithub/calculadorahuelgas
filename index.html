@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora del Coste de la Huelga</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f4f6f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.10);
+      padding: 2rem 2.5rem;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 1.8rem;
+    }
+
+    .field {
+      margin-bottom: 1.1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap span {
+      position: absolute;
+      right: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: #888;
+      pointer-events: none;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.6rem 2.5rem 0.6rem 0.85rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #1a1a2e;
+      transition: border-color .2s;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #4f46e5;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1.5px solid #f0f0f0;
+      margin: 1.5rem 0;
+    }
+
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .result-label {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .result-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    .result-row.highlight .result-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    .result-row.highlight .result-value {
+      font-size: 1.25rem;
+      color: #4f46e5;
+    }
+
+    .result-row.highlight-red .result-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    .result-row.highlight-red .result-value {
+      font-size: 1.25rem;
+      color: #dc2626;
+    }
+
+    .info {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #999;
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Calculadora de Huelga</h1>
+    <p class="subtitle">Calcula el coste económico de participar en una huelga y el tiempo de recuperación.</p>
+
+    <div class="field">
+      <label for="salario">Salario bruto mensual</label>
+      <div class="input-wrap">
+        <input type="number" id="salario" value="2100" min="0" step="50" />
+        <span>€</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="pagas">Pagas extra anuales</label>
+      <div class="input-wrap">
+        <input type="number" id="pagas" value="2000" min="0" step="100" />
+        <span>€</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="dias">Días de huelga</label>
+      <div class="input-wrap">
+        <input type="number" id="dias" value="3" min="1" step="1" />
+        <span>días</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="aumento">Aumento mensual esperado</label>
+      <div class="input-wrap">
+        <input type="number" id="aumento" value="150" min="0" step="10" />
+        <span>€</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="results">
+      <div class="result-row">
+        <span class="result-label">Coste por día de huelga</span>
+        <span class="result-value" id="r-dia">–</span>
+      </div>
+      <div class="result-row highlight-red">
+        <span class="result-label">Coste total de la huelga</span>
+        <span class="result-value" id="r-total">–</span>
+      </div>
+      <div class="result-row highlight">
+        <span class="result-label">Meses para recuperar la inversión</span>
+        <span class="result-value" id="r-meses">–</span>
+      </div>
+    </div>
+
+    <p class="info">
+      Coste/día = (salario mensual ÷ 30) + (pagas extra ÷ 365)<br/>
+      Los días de huelga son días sin salario.
+    </p>
+  </div>
+
+  <script>
+    const ids = ['salario', 'pagas', 'dias', 'aumento'];
+
+    function fmt(n, decimals = 2) {
+      return n.toLocaleString('es-ES', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    function calc() {
+      const salario = parseFloat(document.getElementById('salario').value) || 0;
+      const pagas   = parseFloat(document.getElementById('pagas').value)   || 0;
+      const dias    = parseFloat(document.getElementById('dias').value)     || 0;
+      const aumento = parseFloat(document.getElementById('aumento').value)  || 0;
+
+      const costeDia   = (salario / 30) + (pagas / 365);
+      const costeTotal = costeDia * dias;
+      const meses      = aumento > 0 ? costeTotal / aumento : null;
+
+      document.getElementById('r-dia').textContent   = fmt(costeDia) + ' €';
+      document.getElementById('r-total').textContent = fmt(costeTotal) + ' €';
+      document.getElementById('r-meses').textContent = meses !== null ? fmt(meses) + ' meses' : '–';
+    }
+
+    ids.forEach(id => document.getElementById(id).addEventListener('input', calc));
+    calc();
+  </script>
+</body>
+</html>
