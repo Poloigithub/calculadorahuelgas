@@ -1,4 +1,4 @@
-# Calculadora del Coste de la Huelga
+# Calculadora descuentos huelga
 
 Calculadora web que estima el coste económico neto para el trabajador de participar en una huelga y el tiempo necesario para recuperar esa inversión con el aumento salarial conseguido.
 
@@ -28,7 +28,7 @@ Coste bruto/día = [(Salario bruto mensual ÷ 30) + (Pagas extra anuales ÷ 365)
 
 El factor **1,4** (= 7 ÷ 5) recoge el descuento proporcional del descanso semanal: por cada 5 días laborables en huelga, la empresa también descuenta el día de descanso semanal que les corresponde.
 
-### 2. Descuentos del trabajador — Seguridad Social (fijo)
+### 2. Descuentos trabajador SS (fijo, aplicado automáticamente)
 
 Por los días de huelga el trabajador no cotiza, lo que reduce el coste real:
 
@@ -36,7 +36,7 @@ Por los días de huelga el trabajador no cotiza, lo que reduce el coste real:
 |---|---|
 | Contingencias comunes | 4,70 % |
 | Desempleo | 1,65 % |
-| Formación profesional | 0,15 % |
+| Cuota de solidaridad | 0,15 % |
 | **Total SS obrera** | **6,50 %** |
 
 ### 3. Descuento IRPF
