@@ -14,7 +14,7 @@ Disponible en: **https://poloigithub.github.io/calculadorahuelgas/**
 | Pagas extra anuales | Importe total de pagas extraordinarias al año |
 | Tipo marginal IRPF | Tramo del IRPF que aplica al trabajador (0 %–47 %) |
 | Días de huelga | Número de días que se secundará la huelga |
-| Aumento mensual neto esperado | Mejora salarial neta mensual que se espera conseguir |
+| Aumento mensual bruto esperado | Mejora salarial bruta mensual que se espera conseguir |
 
 ---
 
@@ -49,11 +49,17 @@ El salario no percibido tampoco tributa, por lo que el trabajador se ahorra el i
 Coste neto/día = Coste bruto/día × (1 − 6,50 % − IRPF%)
 ```
 
-### 5. Coste neto total y recuperación
+### 5. Aumento mensual neto
+
+```
+Aumento neto = Aumento bruto × (1 − 6,50 % SS − IRPF%)
+```
+
+### 6. Coste neto total y recuperación
 
 ```
 Coste neto total = Coste neto/día × Días de huelga
-Meses para recuperar = Coste neto total ÷ Aumento mensual neto esperado
+Meses para recuperar = Coste neto total ÷ Aumento mensual neto
 ```
 
 ---

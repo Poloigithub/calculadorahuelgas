@@ -320,7 +320,7 @@
 
     <div class="field">
       <div class="field-header">
-        <label for="aumento-range">Aumento mensual neto esperado</label>
+        <label for="aumento-range">Aumento mensual bruto esperado</label>
         <span class="field-val" id="aumento-display">150 €</span>
       </div>
       <input type="range" id="aumento-range" min="0" max="1000" step="10" value="150" />
@@ -346,6 +346,10 @@
       <div class="result-row highlight-red">
         <span class="result-label">Coste neto total de la huelga</span>
         <span class="result-value" id="r-total">–</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Aumento mensual neto</span>
+        <span class="result-value" id="r-aumento-neto">–</span>
       </div>
       <div class="result-row highlight">
         <span class="result-label">Meses para recuperar la inversión</span>
@@ -385,12 +389,14 @@
       const ahorroDia     = costeBrutoDia * descuento;
       const costeNetoDia  = costeBrutoDia * (1 - descuento);
       const costeTotal    = costeNetoDia * dias;
-      const meses         = aumento > 0 ? costeTotal / aumento : null;
+      const aumentoNeto   = aumento * (1 - descuento);
+      const meses         = aumentoNeto > 0 ? costeTotal / aumentoNeto : null;
 
-      document.getElementById('r-dia-bruto').textContent = fmt2(costeBrutoDia) + ' €';
-      document.getElementById('r-ahorro').textContent    = '−' + fmt2(ahorroDia) + ' €';
-      document.getElementById('r-total').textContent     = fmt2(costeTotal) + ' €';
-      document.getElementById('r-meses').textContent     = meses !== null ? fmt2(meses) + ' meses' : '–';
+      document.getElementById('r-dia-bruto').textContent    = fmt2(costeBrutoDia) + ' €';
+      document.getElementById('r-ahorro').textContent       = '−' + fmt2(ahorroDia) + ' €';
+      document.getElementById('r-total').textContent        = fmt2(costeTotal) + ' €';
+      document.getElementById('r-aumento-neto').textContent = fmt2(aumentoNeto) + ' €';
+      document.getElementById('r-meses').textContent        = meses !== null ? fmt2(meses) + ' meses' : '–';
     }
 
     fields.forEach(({ id, fmt }) => {
